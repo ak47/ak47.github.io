@@ -1,6 +1,6 @@
 ---
 title: "Sweet ego no Sweets Pandemic 😱 🤖 💀😷"
-date: "2020-08-10"
+date: "2020-04-01"
 ---
 
 Pandas are gentle and dirty but fuzzy and cuddly.
