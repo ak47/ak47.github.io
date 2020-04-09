@@ -1,7 +1,9 @@
 ---
-title: "Capitalism such a fragile 🐼 😿"
+title: "Capitalism such a fragile"
 date: "2020-04-08"
 ---
+
+🐼 😿
 
 We come to understand that 🌎 does not empathize with 👨‍👩‍👧‍👦👨‍👨‍👧‍👦👩‍👩‍👧‍👦👨‍👧‍👦👩‍👧‍👦. To persist is the definition of 🤪. This inevitable march to 💩👻 does 😱.
 
