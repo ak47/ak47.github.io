@@ -1,0 +1,2 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[2],{"3XHS":function(t,e,n){"use strict";n.r(e),n.d(e,"query",(function(){return a}));n("q1tI");var o=n("Bl7J"),u=n("qKvR");e.default=function(t){var e=t.data;return Object(u.b)(o.a,null,Object(u.b)("h1",null,"About ",e.site.siteMetadata.title),Object(u.b)("p",null,"We're the only site running on your computer dedicated to showing the best photos and videos of ∫ß eating lots of food."))};var a="1097489062"}}]);
+//# sourceMappingURL=component---src-pages-about-js-66ecb2292715b78715ac.js.map
