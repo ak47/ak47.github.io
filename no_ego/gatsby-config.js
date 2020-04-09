@@ -1,5 +1,9 @@
 module.exports = {
+  siteMetadata: {
+    title: `nO fuiGO`,
+  },
   plugins: [
+    `gatsby-plugin-emotion`,
     {
       resolve: `gatsby-plugin-typography`,
       options: {
