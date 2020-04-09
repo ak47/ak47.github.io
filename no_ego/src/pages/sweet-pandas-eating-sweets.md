@@ -1,6 +1,7 @@
 ---
 title: "Sweet ego no Sweets Pandemic"
 date: "2020-04-01"
+category: "PSA"
 ---
 
 😱 🤖 💀😷

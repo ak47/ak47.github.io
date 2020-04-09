@@ -1,6 +1,7 @@
 ---
 title: "Capitalism such a fragile"
 date: "2020-04-08"
+category: "rant"
 ---
 
 🐼 😿

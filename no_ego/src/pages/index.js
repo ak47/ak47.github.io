@@ -40,6 +40,14 @@ export default ({ data }) => {
                 >
                   — {node.frontmatter.date}
                 </span>
+                <span
+                  css={css`
+                    color: #bbb;
+                  `}
+                >
+                  {" "}
+                  — {node.frontmatter.category}
+                </span>
               </h3>
               <p>{node.excerpt}</p>
             </Link>
@@ -60,6 +68,7 @@ export const query = graphql`
           frontmatter {
             title
             date(formatString: "DD MMMM, YYYY")
+            category
           }
           fields {
             slug

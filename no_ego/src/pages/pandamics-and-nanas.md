@@ -1,6 +1,7 @@
 ---
 title: "Pandamics and nanas"
 date: "2020-04-06"
+category: "PSA"
 ---
 
 Do Pandamics eat 🍌? Check out this short 🎞 that shows that yes! 🐨 do
