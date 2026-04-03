@@ -1,0 +1,8 @@
+# Dependencies — always regenerate with `yarn install` / `npm install` in no_ego/
+node_modules/
+
+# Gatsby cache (if build is run from repo root by mistake)
+.cache/
+
+# OS noise
+.DS_Store
