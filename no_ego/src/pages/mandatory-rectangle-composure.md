@@ -12,4 +12,4 @@ Should your solemn pundit face crack, do not panic. The Ministry of No Ego has s
 
 🎭 The twist arrives on schedule. You have been warned. You have also been entertained.
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/Mh5LY4Mz15I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/DIsgBAXQxR4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
