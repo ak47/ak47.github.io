@@ -4,58 +4,181 @@ import { Link, graphql } from "gatsby"
 import { rhythm } from "../utils/typography"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
+import { theme } from "../styles/theme"
+
+const { colors, fonts, radius, shadow } = theme
 
 export default ({ data }) => {
-  console.log(data)
   return (
     <Layout>
       <SEO title="home" />
-      <div>
+      <section
+        css={css`
+          margin-bottom: ${rhythm(2.25)};
+          padding: ${rhythm(1.5)} ${rhythm(1.25)};
+          background: linear-gradient(
+            135deg,
+            ${colors.surface} 0%,
+            ${colors.accentMuted} 100%
+          );
+          border: 1px solid ${colors.borderLight};
+          border-radius: ${radius.lg};
+          box-shadow: ${shadow.md};
+        `}
+      >
+        <p
+          css={css`
+            font-family: ${fonts.heading};
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: ${colors.accent};
+            margin-bottom: ${rhythm(0.5)};
+          `}
+        >
+          Journal &amp; experiments
+        </p>
         <h1
           css={css`
-            display: inline-block;
-            border-bottom: 1px solid;
+            margin-bottom: ${rhythm(0.75)};
+            line-height: 1.15;
           `}
         >
           Cute Xi Pandas Eating bamboo
         </h1>
-        <h4>{data.allMarkdownRemark.totalCount} Posts</h4>
+        <p
+          css={css`
+            margin-bottom: 0;
+            color: ${colors.inkMuted};
+            max-width: 36em;
+          `}
+        >
+          Placeholder index copy — swap this block when you settle on positioning.
+          The list below stays as mock posts while you iterate on visual direction.
+        </p>
+      </section>
+
+      <div
+        css={css`
+          display: flex;
+          align-items: baseline;
+          justify-content: space-between;
+          gap: ${rhythm(1)};
+          margin-bottom: ${rhythm(1.25)};
+          flex-wrap: wrap;
+        `}
+      >
+        <h4
+          css={css`
+            margin-bottom: 0;
+            font-family: ${fonts.heading};
+            font-weight: 600;
+            color: ${colors.ink};
+          `}
+        >
+          Latest
+        </h4>
+        <span
+          css={css`
+            font-family: ${fonts.mono};
+            font-size: 0.8rem;
+            color: ${colors.inkSubtle};
+          `}
+        >
+          {data.allMarkdownRemark.totalCount} entries
+        </span>
+      </div>
+
+      <ul
+        css={css`
+          list-style: none;
+          margin: 0;
+          padding: 0;
+          display: flex;
+          flex-direction: column;
+          gap: ${rhythm(0.85)};
+        `}
+      >
         {data.allMarkdownRemark.edges.map(({ node }) => (
-          <div key={node.id}>
+          <li key={node.id}>
             <Link
               to={node.fields.slug}
               css={css`
+                display: block;
                 text-decoration: none;
+                border-bottom: none;
                 color: inherit;
+                padding: ${rhythm(1)} ${rhythm(1.1)};
+                background: ${colors.surface};
+                border: 1px solid ${colors.borderLight};
+                border-radius: ${radius.md};
+                box-shadow: ${shadow.sm};
+                transition: transform 0.18s ease, box-shadow 0.18s ease,
+                  border-color 0.18s ease;
+
+                &:hover {
+                  transform: translateY(-2px);
+                  box-shadow: ${shadow.md};
+                  border-color: ${colors.border};
+                }
               `}
             >
-              <h3
+              <div
                 css={css`
-                  margin-bottom: ${rhythm(1 / 4)};
+                  display: flex;
+                  flex-wrap: wrap;
+                  align-items: baseline;
+                  gap: 0.35rem 0.75rem;
+                  margin-bottom: ${rhythm(0.45)};
                 `}
               >
-                {node.frontmatter.title}{" "}
-                <span
+                <h3
                   css={css`
-                    color: #bbb;
+                    margin-bottom: 0;
+                    flex: 1 1 auto;
+                    font-size: 1.25rem;
                   `}
                 >
-                  — {node.frontmatter.date}
-                </span>
+                  {node.frontmatter.title}
+                </h3>
                 <span
                   css={css`
-                    color: #bbb;
+                    font-family: ${fonts.mono};
+                    font-size: 0.75rem;
+                    font-weight: 500;
+                    text-transform: uppercase;
+                    letter-spacing: 0.06em;
+                    color: ${colors.accent};
+                    background: ${colors.accentMuted};
+                    padding: 0.2rem 0.5rem;
+                    border-radius: ${radius.sm};
                   `}
                 >
-                  {" "}
-                  — {node.frontmatter.category}
+                  {node.frontmatter.category}
                 </span>
-              </h3>
-              <p>{node.excerpt}</p>
+              </div>
+              <p
+                css={css`
+                  margin-bottom: ${rhythm(0.35)};
+                  color: ${colors.inkMuted};
+                `}
+              >
+                {node.excerpt}
+              </p>
+              <span
+                css={css`
+                  font-family: ${fonts.mono};
+                  font-size: 0.78rem;
+                  color: ${colors.inkSubtle};
+                `}
+              >
+                {node.frontmatter.date}
+              </span>
             </Link>
-          </div>
+          </li>
         ))}
-      </div>
+      </ul>
     </Layout>
   )
 }

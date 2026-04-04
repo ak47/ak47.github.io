@@ -11,8 +11,8 @@ module.exports = {
         name: `no-ego.net`,
         short_name: `no ego : humility is a virtue`,
         start_url: `/`,
-        background_color: `#d40000`,
-        theme_color: `#d40000`,
+        background_color: `#e8ecf2`,
+        theme_color: `#1b4d7a`,
         // Enables "Add to Homescreen" prompt and disables browser UI (including back button)
         // see https://developers.google.com/web/fundamentals/web-app-manifest/#display
         display: `standalone`,

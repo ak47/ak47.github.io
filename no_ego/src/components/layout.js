@@ -1,8 +1,30 @@
 import React from "react"
-import { css } from "@emotion/core"
+import { css, Global } from "@emotion/core"
 import { useStaticQuery, Link, graphql } from "gatsby"
 
 import { rhythm } from "../utils/typography"
+import { theme } from "../styles/theme"
+
+const { colors, fonts, radius, shadow, space } = theme
+
+const navLink = css`
+  font-family: ${fonts.heading};
+  font-weight: 500;
+  font-size: 0.92rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: ${colors.inkMuted};
+  text-decoration: none;
+  border-bottom: none;
+  padding: 0.35rem 0.65rem;
+  border-radius: ${radius.sm};
+  transition: color 0.15s ease, background 0.15s ease;
+
+  &:hover {
+    color: ${colors.accent};
+    background: ${colors.accentMuted};
+  }
+`
 
 export default ({ children }) => {
   const data = useStaticQuery(
@@ -16,44 +38,152 @@ export default ({ children }) => {
       }
     `
   )
+
   return (
-    <div
-      css={css`
-        margin: 0 auto;
-        max-width: 700px;
-        padding: ${rhythm(2)};
-        padding-top: ${rhythm(1.5)};
-      `}
-    >
-      <Link to={`/`}>
-        <h3
+    <>
+      <Global
+        styles={css`
+          html {
+            background: ${colors.canvas};
+          }
+          ::selection {
+            background: ${colors.accentMuted};
+            color: ${colors.ink};
+          }
+        `}
+      />
+      <div
+        css={css`
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+        `}
+      >
+        <header
           css={css`
-            margin-bottom: ${rhythm(2)};
-            display: inline-block;
-            font-style: normal;
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            background: ${colors.surface};
+            border-bottom: 1px solid ${colors.border};
+            box-shadow: ${shadow.sm};
           `}
         >
-          {data.site.siteMetadata.title}
-        </h3>
-      </Link>
-      <Link
-        to={`/about/`}
-        css={css`
-          float: right;
-        `}
-      >
-        About
-      </Link>
-      &nbsp;
-      <Link
-        to={`/my-files/`}
-        css={css`
-          float: right;
-        `}
-      >
-        Files <span role="img">🤡</span>
-      </Link>
-      {children}
-    </div>
+          <div
+            css={css`
+              max-width: ${space.wideMax};
+              margin: 0 auto;
+              padding: 0 ${rhythm(1)};
+              height: ${space.headerH};
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              gap: ${rhythm(1)};
+            `}
+          >
+            <Link
+              to="/"
+              css={css`
+                font-family: ${fonts.heading};
+                font-weight: 700;
+                font-size: 1.05rem;
+                letter-spacing: 0.06em;
+                color: ${colors.ink};
+                text-decoration: none;
+                border-bottom: none;
+                display: flex;
+                align-items: baseline;
+                gap: 0.35rem;
+
+                &:hover {
+                  color: ${colors.accent};
+                }
+              `}
+            >
+              {data.site.siteMetadata.title}
+              <span
+                css={css`
+                  font-weight: 500;
+                  font-size: 0.65rem;
+                  letter-spacing: 0.12em;
+                  text-transform: uppercase;
+                  color: ${colors.inkSubtle};
+                `}
+              >
+                studio
+              </span>
+            </Link>
+            <nav
+              css={css`
+                display: flex;
+                align-items: center;
+                gap: 0.15rem;
+                flex-shrink: 0;
+              `}
+            >
+              <Link to="/about/" css={navLink}>
+                About
+              </Link>
+              <Link to="/my-files/" css={navLink}>
+                Files
+              </Link>
+            </nav>
+          </div>
+        </header>
+
+        <main
+          css={css`
+            flex: 1;
+            width: 100%;
+            max-width: ${space.wideMax};
+            margin: 0 auto;
+            padding: ${rhythm(2)} ${rhythm(1)} ${rhythm(3)};
+          `}
+        >
+          <div
+            css={css`
+              max-width: ${space.maxContent};
+              margin: 0 auto;
+            `}
+          >
+            {children}
+          </div>
+        </main>
+
+        <footer
+          css={css`
+            margin-top: auto;
+            border-top: 1px solid ${colors.border};
+            background: ${colors.surface};
+            padding: ${rhythm(1.25)} ${rhythm(1)};
+          `}
+        >
+          <div
+            css={css`
+              max-width: ${space.wideMax};
+              margin: 0 auto;
+              display: flex;
+              flex-wrap: wrap;
+              align-items: center;
+              justify-content: space-between;
+              gap: ${rhythm(0.75)};
+              font-family: ${fonts.body};
+              font-size: 0.88rem;
+              color: ${colors.inkSubtle};
+            `}
+          >
+            <span>Web design &amp; engineering practice</span>
+            <span
+              css={css`
+                font-family: ${fonts.mono};
+                font-size: 0.8rem;
+              `}
+            >
+              © {new Date().getFullYear()} {data.site.siteMetadata.title}
+            </span>
+          </div>
+        </footer>
+      </div>
+    </>
   )
 }
