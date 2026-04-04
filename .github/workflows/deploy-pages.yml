@@ -38,8 +38,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-no_ego-
 
+      # Gatsby 2 / webpack 4 + OpenSSL 3 (Node 17+): legacy crypto provider
       - name: Install & build Gatsby
         working-directory: no_ego
+        env:
+          NODE_OPTIONS: --openssl-legacy-provider
         run: |
           yarn install --frozen-lockfile
           yarn build
