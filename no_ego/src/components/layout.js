@@ -172,7 +172,7 @@ export default ({ children }) => {
               color: ${colors.inkSubtle};
             `}
           >
-            <span>Web design &amp; engineering practice</span>
+            <span>Web applications and engineering practice</span>
             <span
               css={css`
                 font-family: ${fonts.mono};
