@@ -14,33 +14,33 @@ const theme = {
   headerWeight: 600,
   bodyWeight: 400,
   boldWeight: 600,
-  headerColor: "hsl(222 40% 10%)",
-  bodyColor: "hsl(218 14% 30%)",
+  headerColor: "hsl(24 18% 14%)",
+  bodyColor: "hsl(24 12% 28%)",
   overrideStyles: ({ rhythm }) => ({
     body: {
       fontFeatureSettings: '"kern" 1, "liga" 1',
     },
     a: {
-      color: "#1b4d7a",
+      color: "#b54a32",
       textDecoration: "none",
-      borderBottom: "1px solid rgba(27, 77, 122, 0.35)",
+      borderBottom: "1px solid rgba(181, 74, 50, 0.4)",
     },
     "a:hover": {
-      color: "#163d62",
-      borderBottomColor: "rgba(22, 61, 98, 0.55)",
+      color: "#923b29",
+      borderBottomColor: "rgba(146, 59, 41, 0.55)",
     },
     blockquote: {
-      borderLeft: `4px solid #d1dae6`,
+      borderLeft: `4px solid #ddd0c4`,
       paddingLeft: rhythm(3 / 4),
       marginLeft: 0,
       fontStyle: "normal",
-      color: "hsl(218 12% 38%)",
+      color: "hsl(24 10% 36%)",
     },
     "blockquote > :last-child": {
       marginBottom: 0,
     },
     hr: {
-      background: "#e9eef5",
+      background: "#ebe3da",
     },
     "h1,h2,h3,h4,h5,h6": {
       letterSpacing: "-0.02em",
