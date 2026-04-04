@@ -1,18 +1,17 @@
-import React from "react"
-import { css } from "@emotion/core"
+import * as React from "react"
+import { css } from "@emotion/react"
 import { graphql } from "gatsby"
 import Layout from "../components/layout"
-import SEO from "../components/seo"
+import { SeoHead } from "../components/seo-head"
 import { rhythm } from "../utils/typography"
 import { theme } from "../styles/theme"
 
 const { colors, fonts, radius, shadow } = theme
 
-export default ({ data }) => {
+export default function BlogPostTemplate({ data }) {
   const post = data.markdownRemark
   return (
     <Layout>
-      <SEO title={post.frontmatter.title} description={post.excerpt} />
       <article
         css={css`
           background: ${colors.surface};
@@ -67,8 +66,15 @@ export default ({ data }) => {
   )
 }
 
+export const Head = ({ data }) => (
+  <SeoHead
+    title={data.markdownRemark.frontmatter.title}
+    description={data.markdownRemark.excerpt}
+  />
+)
+
 export const query = graphql`
-  query($slug: String!) {
+  query ($slug: String!) {
     markdownRemark(fields: { slug: { eq: $slug } }) {
       html
       frontmatter {

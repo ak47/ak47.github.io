@@ -25,7 +25,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: "20"
 
       - name: Yarn classic (matches yarn.lock v1)
         run: npm install -g yarn@1.22.22
@@ -38,11 +38,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-no_ego-
 
-      # Gatsby 2 / webpack 4 + OpenSSL 3 (Node 17+): legacy crypto provider
       - name: Install & build Gatsby
         working-directory: no_ego
-        env:
-          NODE_OPTIONS: --openssl-legacy-provider
         run: |
           yarn install --frozen-lockfile
           yarn build

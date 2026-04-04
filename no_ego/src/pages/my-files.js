@@ -1,17 +1,16 @@
-import React from "react"
-import { css } from "@emotion/core"
+import * as React from "react"
+import { css } from "@emotion/react"
 import { graphql } from "gatsby"
 import Layout from "../components/layout"
-import SEO from "../components/seo"
+import { SeoHead } from "../components/seo-head"
 import { rhythm } from "../utils/typography"
 import { theme } from "../styles/theme"
 
 const { colors, fonts, radius, shadow } = theme
 
-export default ({ data }) => {
+export default function MyFilesPage({ data }) {
   return (
     <Layout>
-      <SEO title="files" />
       <article
         css={css`
           background: ${colors.surface};
@@ -89,8 +88,8 @@ export default ({ data }) => {
             </tr>
           </thead>
           <tbody>
-            {data.allFile.edges.map(({ node }, index) => (
-              <tr key={index}>
+            {data.allFile.edges.map(({ node }) => (
+              <tr key={node.relativePath}>
                 <td>{node.relativePath}</td>
                 <td>{node.prettySize}</td>
                 <td>{node.extension}</td>
@@ -103,6 +102,8 @@ export default ({ data }) => {
     </Layout>
   )
 }
+
+export const Head = () => <SeoHead title="files" />
 
 export const query = graphql`
   query {

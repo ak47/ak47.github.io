@@ -1,17 +1,16 @@
-import React from "react"
-import { css } from "@emotion/core"
+import * as React from "react"
+import { css } from "@emotion/react"
 import { Link, graphql } from "gatsby"
 import { rhythm } from "../utils/typography"
 import Layout from "../components/layout"
-import SEO from "../components/seo"
+import { SeoHead } from "../components/seo-head"
 import { theme } from "../styles/theme"
 
 const { colors, fonts, radius, shadow } = theme
 
-export default ({ data }) => {
+export default function IndexPage({ data }) {
   return (
     <Layout>
-      <SEO title="home" />
       <section
         css={css`
           margin-bottom: ${rhythm(2.25)};
@@ -185,9 +184,11 @@ export default ({ data }) => {
   )
 }
 
+export const Head = () => <SeoHead title="home" />
+
 export const query = graphql`
   query {
-    allMarkdownRemark(sort: { fields: [frontmatter___date], order: DESC }) {
+    allMarkdownRemark(sort: { frontmatter: { date: DESC } }) {
       totalCount
       edges {
         node {
