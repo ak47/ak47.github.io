@@ -1,0 +1,59 @@
+# Build no_ego (Gatsby) and publish to GitHub Pages.
+#
+# Repo → Settings → Pages → Source must be "GitHub Actions" (not a branch).
+# Otherwise the site keeps serving stale HTML/JS committed at the repo root.
+name: Deploy Pages
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Yarn classic (matches yarn.lock v1)
+        run: npm install -g yarn@1.22.22
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: no_ego/node_modules
+          key: ${{ runner.os }}-no_ego-${{ hashFiles('no_ego/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-no_ego-
+
+      - name: Install & build Gatsby
+        working-directory: no_ego
+        run: |
+          yarn install --frozen-lockfile
+          yarn build
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: no_ego/public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4
