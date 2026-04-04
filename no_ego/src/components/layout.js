@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useCallback } from "react"
+import React, { useState, useEffect, useCallback, useContext } from "react"
 import { css, Global } from "@emotion/react"
-import { useStaticQuery, Link, graphql } from "gatsby"
+import { Link } from "gatsby"
 
+import { SiteMetadataContext } from "../context/site-metadata"
 import { rhythm } from "../utils/typography"
 import { theme } from "../styles/theme"
 import {
@@ -42,7 +43,8 @@ const navLink = css`
   }
 `
 
-export default ({ children }) => {
+export default function Layout({ children }) {
+  const siteMetadata = useContext(SiteMetadataContext)
   const [bgColor, setBgColor] = useState(() => BG_PALETTE[0])
 
   const advanceBg = useCallback(() => {
@@ -54,18 +56,6 @@ export default ({ children }) => {
     const id = window.setInterval(advanceBg, BG_HOLD_MS)
     return () => window.clearInterval(id)
   }, [advanceBg])
-
-  const data = useStaticQuery(
-    graphql`
-      query {
-        site {
-          siteMetadata {
-            title
-          }
-        }
-      }
-    `
-  )
 
   return (
     <>
@@ -133,7 +123,7 @@ export default ({ children }) => {
                 }
               `}
             >
-              {data.site.siteMetadata.title}
+              {siteMetadata.title}
               <span
                 css={css`
                   font-weight: 500;
@@ -212,7 +202,7 @@ export default ({ children }) => {
                 font-size: 0.8rem;
               `}
             >
-              © {new Date().getFullYear()} {data.site.siteMetadata.title}
+              © {new Date().getFullYear()} {siteMetadata.title}
             </span>
           </div>
         </footer>

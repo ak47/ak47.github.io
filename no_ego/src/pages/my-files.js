@@ -103,10 +103,19 @@ export default function MyFilesPage({ data }) {
   )
 }
 
-export const Head = () => <SeoHead title="files" />
+export const Head = ({ data }) => (
+  <SeoHead title="files" siteMetadata={data.site.siteMetadata} />
+)
 
 export const query = graphql`
   query {
+    site {
+      siteMetadata {
+        title
+        description
+        author
+      }
+    }
     allFile {
       edges {
         node {

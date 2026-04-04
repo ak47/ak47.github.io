@@ -184,10 +184,19 @@ export default function IndexPage({ data }) {
   )
 }
 
-export const Head = () => <SeoHead title="home" />
+export const Head = ({ data }) => (
+  <SeoHead title="home" siteMetadata={data.site.siteMetadata} />
+)
 
 export const query = graphql`
   query {
+    site {
+      siteMetadata {
+        title
+        description
+        author
+      }
+    }
     allMarkdownRemark(sort: { frontmatter: { date: DESC } }) {
       totalCount
       edges {

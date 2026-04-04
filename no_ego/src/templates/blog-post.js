@@ -70,11 +70,19 @@ export const Head = ({ data }) => (
   <SeoHead
     title={data.markdownRemark.frontmatter.title}
     description={data.markdownRemark.excerpt}
+    siteMetadata={data.site.siteMetadata}
   />
 )
 
 export const query = graphql`
   query ($slug: String!) {
+    site {
+      siteMetadata {
+        title
+        description
+        author
+      }
+    }
     markdownRemark(fields: { slug: { eq: $slug } }) {
       html
       frontmatter {

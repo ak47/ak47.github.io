@@ -54,13 +54,17 @@ export default function AboutPage({ data }) {
   )
 }
 
-export const Head = () => <SeoHead title="about" />
+export const Head = ({ data }) => (
+  <SeoHead title="about" siteMetadata={data.site.siteMetadata} />
+)
 
 export const query = graphql`
   query {
     site {
       siteMetadata {
         title
+        description
+        author
       }
     }
   }
