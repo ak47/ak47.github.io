@@ -1,11 +1,27 @@
-import React from "react"
+import React, { useState, useEffect, useCallback } from "react"
 import { css, Global } from "@emotion/core"
 import { useStaticQuery, Link, graphql } from "gatsby"
 
 import { rhythm } from "../utils/typography"
 import { theme } from "../styles/theme"
+import {
+  BG_PALETTE,
+  BG_TRANSITION_MS,
+  BG_HOLD_MS,
+} from "../styles/bgPalette"
 
 const { colors, fonts, radius, shadow, space } = theme
+
+function pickNextBg(current) {
+  if (BG_PALETTE.length < 2) return current
+  let next = current
+  let guard = 0
+  while (next === current && guard < 12) {
+    next = BG_PALETTE[Math.floor(Math.random() * BG_PALETTE.length)]
+    guard += 1
+  }
+  return next
+}
 
 const navLink = css`
   font-family: ${fonts.heading};
@@ -27,6 +43,18 @@ const navLink = css`
 `
 
 export default ({ children }) => {
+  const [bgColor, setBgColor] = useState(() => BG_PALETTE[0])
+
+  const advanceBg = useCallback(() => {
+    setBgColor(prev => pickNextBg(prev))
+  }, [])
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined
+    const id = window.setInterval(advanceBg, BG_HOLD_MS)
+    return () => window.clearInterval(id)
+  }, [advanceBg])
+
   const data = useStaticQuery(
     graphql`
       query {
@@ -44,7 +72,12 @@ export default ({ children }) => {
       <Global
         styles={css`
           html {
-            background: ${colors.canvas};
+            background-color: ${bgColor};
+            transition: background-color ${BG_TRANSITION_MS}ms ease-in-out;
+            min-height: 100%;
+          }
+          body {
+            min-height: 100%;
           }
           ::selection {
             background: ${colors.accentMuted};
