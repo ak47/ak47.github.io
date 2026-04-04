@@ -54,8 +54,10 @@ export default ({ data }) => {
             max-width: 36em;
           `}
         >
-          Placeholder index copy — swap this block when you settle on positioning.
-          The list below stays as mock posts while you iterate on visual direction.
+          We precompute the transitive closure of each opinion so related posts are
+          reachable in O(1) hops across the ideological graph—edges are weighted by
+          emotional bandwidth, not relevance. The list below is still mock content, but
+          the closure is already materialized in staging.
         </p>
       </section>
 
