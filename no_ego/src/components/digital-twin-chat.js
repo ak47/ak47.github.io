@@ -150,7 +150,7 @@ export default function DigitalTwinChat() {
           margin: 0 0 ${rhythm(0.75)};
         `}
       >
-        Ask about this site
+        Ask Andbot something
       </h2>
       <p
         css={css`
@@ -161,9 +161,9 @@ export default function DigitalTwinChat() {
           line-height: 1.45;
         `}
       >
-        Powered by the digital-twin API. Your thread is saved per browser via{" "}
+        Powered by the digital-twin API. Your thread is saved for
         <code css={css`font-family: ${fonts.mono}; font-size: 0.85em;`}>
-          X-Session-Id
+          Quality Control
         </code>
         .
       </p>
