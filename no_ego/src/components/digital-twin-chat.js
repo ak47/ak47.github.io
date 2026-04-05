@@ -8,7 +8,7 @@ import {
   sendChatPrompt,
 } from "../utils/digitalTwinApi"
 
-const { colors, fonts, radius, shadow } = theme
+const { colors, fonts, radius } = theme
 
 export default function DigitalTwinChat() {
   const apiBase = getApiBase()
@@ -117,25 +117,17 @@ export default function DigitalTwinChat() {
   return (
     <section
       css={css`
-        margin-top: ${rhythm(2)};
-        background: ${colors.surface};
-        border: 1px solid ${colors.borderLight};
-        border-radius: ${radius.lg};
-        box-shadow: ${shadow.md};
-        padding: ${rhythm(1.25)} ${rhythm(1.25)} ${rhythm(1.5)};
+        margin-top: 0;
+        flex: 1 1 auto;
         display: flex;
         flex-direction: column;
-        max-height: min(70vh, 520px);
+        min-height: min(52vh, 480px);
+        max-height: min(calc(100vh - 9.5rem), 860px);
+        padding: 0;
 
         @media (max-width: 640px) {
-          margin-top: ${rhythm(1.25)};
-          margin-left: calc(-1 * ${rhythm(0.35)});
-          margin-right: calc(-1 * ${rhythm(0.35)});
-          width: calc(100% + ${rhythm(0.7)});
-          max-width: none;
-          padding: ${rhythm(0.85)} ${rhythm(0.5)} ${rhythm(1)};
-          max-height: min(72vh, 560px);
-          border-radius: ${radius.md};
+          min-height: min(50vh, 440px);
+          max-height: min(calc(100vh - 8rem), 780px);
         }
       `}
     >
@@ -147,26 +139,11 @@ export default function DigitalTwinChat() {
           letter-spacing: 0.16em;
           text-transform: uppercase;
           color: ${colors.accent};
-          margin: 0 0 ${rhythm(0.75)};
+          margin: 0 0 ${rhythm(0.65)};
         `}
       >
-        Ask Andbot something
+        Petition the twin in the dark mirror
       </h2>
-      <p
-        css={css`
-          margin: 0 0 ${rhythm(1)};
-          font-family: ${fonts.body};
-          font-size: 0.88rem;
-          color: ${colors.inkMuted};
-          line-height: 1.45;
-        `}
-      >
-        Powered by the digital-twin API. Your thread is saved for
-        <code css={css`font-family: ${fonts.mono}; font-size: 0.85em;`}>
-          Quality Control
-        </code>
-        .
-      </p>
 
       {error && (
         <p
@@ -186,14 +163,17 @@ export default function DigitalTwinChat() {
 
       <div
         css={css`
-          flex: 1;
+          flex: 1 1 auto;
+          min-height: 0;
           overflow-y: auto;
           margin-bottom: ${rhythm(1)};
-          padding: ${rhythm(0.5)} 0;
+          padding: ${rhythm(0.65)} ${rhythm(0.35)};
           display: flex;
           flex-direction: column;
           gap: ${rhythm(0.65)};
-          min-height: 120px;
+          border-radius: ${radius.md};
+          background: ${colors.canvas};
+          border: 1px solid ${colors.borderLight};
         `}
       >
         {loadingHistory && (
@@ -282,7 +262,7 @@ export default function DigitalTwinChat() {
         </label>
         <textarea
           id="digital-twin-chat-input"
-          rows={3}
+          rows={2}
           value={input}
           disabled={sending || loadingHistory}
           onChange={e => setInput(e.target.value)}
@@ -290,7 +270,8 @@ export default function DigitalTwinChat() {
           css={css`
             width: 100%;
             resize: vertical;
-            min-height: 72px;
+            min-height: 52px;
+            max-height: 160px;
             padding: ${rhythm(0.6)} ${rhythm(0.75)};
             border-radius: ${radius.md};
             border: 1px solid ${colors.border};

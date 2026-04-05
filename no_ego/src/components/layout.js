@@ -43,7 +43,7 @@ const navLink = css`
   }
 `
 
-export default function Layout({ children }) {
+export default function Layout({ children, contentMaxWidth = space.maxContent }) {
   const siteMetadata = useContext(SiteMetadataContext)
   const [bgColor, setBgColor] = useState(() => BG_PALETTE[0])
 
@@ -165,7 +165,7 @@ export default function Layout({ children }) {
         >
           <div
             css={css`
-              max-width: ${space.maxContent};
+              max-width: ${contentMaxWidth};
               margin: 0 auto;
             `}
           >

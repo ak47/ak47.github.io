@@ -7,11 +7,11 @@ import { SeoHead } from "../components/seo-head"
 import { rhythm } from "../utils/typography"
 import { theme } from "../styles/theme"
 
-const { colors, fonts, radius, shadow } = theme
+const { colors, fonts, radius, shadow, space } = theme
 
 export default function AboutPage({ data }) {
   return (
-    <Layout>
+    <Layout contentMaxWidth={space.wideMax}>
       <article
         css={css`
           background: ${colors.surface};
@@ -19,6 +19,16 @@ export default function AboutPage({ data }) {
           border-radius: ${radius.lg};
           box-shadow: ${shadow.md};
           padding: ${rhythm(1.75)} ${rhythm(1.5)} ${rhythm(2)};
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: ${rhythm(1.75)};
+          align-items: start;
+
+          @media (min-width: 900px) {
+            grid-template-columns: minmax(240px, 300px) minmax(0, 1fr);
+            gap: ${rhythm(2)} ${rhythm(2.5)};
+            padding: ${rhythm(1.75)} ${rhythm(1.75)} ${rhythm(2)};
+          }
 
           @media (max-width: 640px) {
             padding: ${rhythm(1.15)} ${rhythm(0.65)} ${rhythm(1.35)};
@@ -26,36 +36,69 @@ export default function AboutPage({ data }) {
           }
         `}
       >
-        <p
+        <header
           css={css`
-            font-family: ${fonts.heading};
-            font-size: 0.72rem;
-            font-weight: 600;
-            letter-spacing: 0.18em;
-            text-transform: uppercase;
-            color: ${colors.accent};
-            margin-bottom: ${rhythm(0.5)};
+            @media (min-width: 900px) {
+              position: sticky;
+              top: calc(${space.headerH} + ${rhythm(1)});
+            }
           `}
         >
-          About
-        </p>
-        <h1
+          <h1
+            css={css`
+              margin-bottom: ${rhythm(1)};
+            `}
+          >
+            About {data.site.siteMetadata.title}
+          </h1>
+          <p
+            css={css`
+              color: ${colors.inkMuted};
+              max-width: 38em;
+            `}
+          >
+            We&apos;re the only site running on your computer dedicated to showing the
+            best photos and videos of ∫ß eating lots of food.
+          </p>
+          <p
+            css={css`
+              margin: ${rhythm(1)} 0 0;
+              max-width: 38em;
+              font-family: ${fonts.body};
+              font-size: 0.8rem;
+              line-height: 1.45;
+              color: ${colors.inkSubtle};
+            `}
+          >
+            Powered by the digital-twin API. Your thread is saved per browser via{" "}
+            <code css={css`font-family: ${fonts.mono}; font-size: 0.9em;`}>
+              X-Session-Id
+            </code>
+            .
+          </p>
+        </header>
+        <div
           css={css`
-            margin-bottom: ${rhythm(1)};
+            min-width: 0;
+            min-height: min(58vh, 520px);
+            display: flex;
+            flex-direction: column;
+
+            @media (min-width: 900px) {
+              min-height: min(calc(100vh - ${space.headerH} - ${rhythm(5)}), 720px);
+              border-left: 1px solid ${colors.borderLight};
+              padding-left: ${rhythm(2)};
+              margin-left: 0;
+            }
+
+            @media (max-width: 899px) {
+              padding-top: ${rhythm(0.5)};
+              border-top: 1px solid ${colors.borderLight};
+            }
           `}
         >
-          About {data.site.siteMetadata.title}
-        </h1>
-        <p
-          css={css`
-            color: ${colors.inkMuted};
-            max-width: 38em;
-          `}
-        >
-          We&apos;re the only site running on your computer dedicated to showing the
-          best photos and videos of ∫ß eating lots of food.
-        </p>
-        <DigitalTwinChat />
+          <DigitalTwinChat />
+        </div>
       </article>
     </Layout>
   )
