@@ -46,6 +46,21 @@ export async function loadChatHistory(apiBase) {
  * @param {string} prompt
  * @param {(chunk: string) => void} onTextChunk
  */
+/**
+ * @param {string} apiBase
+ * @returns {Promise<{ modelId: string, provider: string }>}
+ */
+export async function loadLlmModelInfo(apiBase) {
+  const res = await fetch(`${apiBase}/`)
+  if (!res.ok) {
+    throw new Error(`GET / failed (${res.status})`)
+  }
+  const data = await res.json()
+  const modelId = String(data.llm_model || "").trim()
+  const provider = String(data.llm_provider || "vertex").trim()
+  return { modelId, provider }
+}
+
 export async function sendChatPrompt(apiBase, prompt, onTextChunk) {
   const res = await fetch(`${apiBase}/api/chat`, {
     method: "POST",
