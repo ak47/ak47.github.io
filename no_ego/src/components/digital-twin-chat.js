@@ -126,6 +126,17 @@ export default function DigitalTwinChat() {
         display: flex;
         flex-direction: column;
         max-height: min(70vh, 520px);
+
+        @media (max-width: 640px) {
+          margin-top: ${rhythm(1.25)};
+          margin-left: calc(-1 * ${rhythm(0.35)});
+          margin-right: calc(-1 * ${rhythm(0.35)});
+          width: calc(100% + ${rhythm(0.7)});
+          max-width: none;
+          padding: ${rhythm(0.85)} ${rhythm(0.5)} ${rhythm(1)};
+          max-height: min(72vh, 560px);
+          border-radius: ${radius.md};
+        }
       `}
     >
       <h2
@@ -217,6 +228,7 @@ export default function DigitalTwinChat() {
               font-size: 0.9rem;
               line-height: 1.5;
               white-space: pre-wrap;
+              overflow-wrap: anywhere;
               word-break: break-word;
               background: ${m.role === "user"
                 ? colors.accentMuted
@@ -224,6 +236,19 @@ export default function DigitalTwinChat() {
               color: ${colors.ink};
               border: 1px solid
                 ${m.role === "user" ? colors.borderLight : colors.border};
+
+              @media (max-width: 640px) {
+                align-self: stretch;
+                max-width: none;
+                width: 100%;
+                box-sizing: border-box;
+                padding: ${rhythm(0.5)} ${rhythm(0.6)};
+                font-size: 0.95rem;
+                border-left-width: 3px;
+                border-left-color: ${m.role === "user"
+                  ? colors.accent
+                  : colors.border};
+              }
             `}
           >
             {m.text || (m.role === "assistant" && sending ? "…" : "")}

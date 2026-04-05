@@ -19,6 +19,11 @@ export default function AboutPage({ data }) {
           border-radius: ${radius.lg};
           box-shadow: ${shadow.md};
           padding: ${rhythm(1.75)} ${rhythm(1.5)} ${rhythm(2)};
+
+          @media (max-width: 640px) {
+            padding: ${rhythm(1.15)} ${rhythm(0.65)} ${rhythm(1.35)};
+            border-radius: ${radius.md};
+          }
         `}
       >
         <p
