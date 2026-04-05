@@ -5,9 +5,15 @@
 
 export const SESSION_STORAGE_KEY = "digital_twin_session_id"
 
+/** Production default when CI omits GATSBY_DIGITAL_TWIN_API_BASE (matches custom domain). */
+const PRODUCTION_API_BASE = "https://digital-twin.no-ego.net"
+
 export function getApiBase() {
   const raw = (process.env.GATSBY_DIGITAL_TWIN_API_BASE || "").trim()
-  return raw.replace(/\/$/, "")
+  const fromEnv = raw.replace(/\/$/, "")
+  if (fromEnv) return fromEnv
+  if (process.env.NODE_ENV === "production") return PRODUCTION_API_BASE
+  return ""
 }
 
 function sessionHeaders() {

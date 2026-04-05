@@ -41,9 +41,11 @@ jobs:
       - name: Install & build Gatsby
         working-directory: no_ego
         env:
-          # Repository variable (recommended): Settings → Secrets and variables → Actions → Variables
+          # Optional repo Variable overrides; if unset, build uses production default in digitalTwinApi.js
           GATSBY_DIGITAL_TWIN_API_BASE: ${{ vars.GATSBY_DIGITAL_TWIN_API_BASE }}
         run: |
+          # Bash default if GitHub Variable is empty (expression can't || a string in env: block).
+          export GATSBY_DIGITAL_TWIN_API_BASE="${GATSBY_DIGITAL_TWIN_API_BASE:-https://digital-twin.no-ego.net}"
           yarn install --frozen-lockfile
           yarn build
 
