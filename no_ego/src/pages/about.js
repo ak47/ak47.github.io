@@ -2,6 +2,7 @@ import * as React from "react"
 import { css } from "@emotion/react"
 import { graphql } from "gatsby"
 import Layout from "../components/layout"
+import DigitalTwinChat from "../components/digital-twin-chat"
 import { SeoHead } from "../components/seo-head"
 import { rhythm } from "../utils/typography"
 import { theme } from "../styles/theme"
@@ -49,6 +50,7 @@ export default function AboutPage({ data }) {
           We&apos;re the only site running on your computer dedicated to showing the
           best photos and videos of ∫ß eating lots of food.
         </p>
+        <DigitalTwinChat />
       </article>
     </Layout>
   )

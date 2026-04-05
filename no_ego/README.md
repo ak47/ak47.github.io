@@ -97,3 +97,13 @@ Looking for more guidance? Full documentation for Gatsby lives [on the website](
 [![Deploy with ZEIT Now](https://zeit.co/button)](https://zeit.co/import/project?template=https://github.com/gatsbyjs/gatsby-starter-hello-world)
 
 <!-- AUTO-GENERATED-CONTENT:END -->
+
+## Digital twin chat (About page)
+
+The **About** page embeds a widget that calls the Cloud Run API (`GET` / `POST /api/chat`, `X-Session-Id`, SSE).
+
+- **Local:** copy `.env.development.example` to `.env.development` and set `GATSBY_DIGITAL_TWIN_API_BASE=https://digital-twin.no-ego.net`, then `yarn develop`.
+- **GitHub Actions:** add repository variable **`GATSBY_DIGITAL_TWIN_API_BASE`** (same URL, no trailing slash) under *Settings → Secrets and variables → Actions → Variables* so **Deploy Pages** bakes it into the build.
+
+If the variable is unset, the About page shows a short notice instead of the chat UI.
+

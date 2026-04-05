@@ -40,6 +40,9 @@ jobs:
 
       - name: Install & build Gatsby
         working-directory: no_ego
+        env:
+          # Repository variable (recommended): Settings → Secrets and variables → Actions → Variables
+          GATSBY_DIGITAL_TWIN_API_BASE: ${{ vars.GATSBY_DIGITAL_TWIN_API_BASE }}
         run: |
           yarn install --frozen-lockfile
           yarn build
