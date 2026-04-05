@@ -4,12 +4,42 @@ import { graphql } from "gatsby"
 import Layout from "../components/layout"
 import DigitalTwinChat from "../components/digital-twin-chat"
 import { SeoHead } from "../components/seo-head"
+import { getApiBase, loadLlmModelInfo } from "../utils/digitalTwinApi"
 import { rhythm } from "../utils/typography"
 import { theme } from "../styles/theme"
 
 const { colors, fonts, radius, shadow, space } = theme
 
 export default function AboutPage({ data }) {
+  const [llmInfo, setLlmInfo] = React.useState(null)
+  const [llmError, setLlmError] = React.useState(false)
+
+  React.useEffect(() => {
+    const base = getApiBase()
+    if (!base) {
+      setLlmInfo(null)
+      setLlmError(false)
+      return undefined
+    }
+    let cancelled = false
+    loadLlmModelInfo(base)
+      .then((info) => {
+        if (!cancelled) {
+          setLlmInfo(info)
+          setLlmError(false)
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setLlmInfo(null)
+          setLlmError(true)
+        }
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
   return (
     <Layout contentMaxWidth={space.wideMax}>
       <article
@@ -76,6 +106,41 @@ export default function AboutPage({ data }) {
             </code>
             .
           </p>
+          {llmInfo && llmInfo.modelId ? (
+            <p
+              css={css`
+                margin: ${rhythm(0.85)} 0 0;
+                max-width: 38em;
+                font-family: ${fonts.body};
+                font-size: 0.8rem;
+                line-height: 1.45;
+                color: ${colors.inkSubtle};
+              `}
+            >
+              LLM:{" "}
+              <code
+                css={css`
+                  font-family: ${fonts.mono};
+                  font-size: 0.9em;
+                `}
+              >
+                {llmInfo.modelId}
+              </code>
+              {llmInfo.provider ? ` (${llmInfo.provider})` : ""}
+            </p>
+          ) : null}
+          {llmError ? (
+            <p
+              css={css`
+                margin: ${rhythm(0.85)} 0 0;
+                max-width: 38em;
+                font-size: 0.8rem;
+                color: ${colors.inkMuted};
+              `}
+            >
+              Couldn&apos;t load model info from the API.
+            </p>
+          ) : null}
         </header>
         <div
           css={css`
