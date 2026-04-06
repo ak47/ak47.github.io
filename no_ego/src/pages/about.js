@@ -141,6 +141,26 @@ export default function AboutPage({ data }) {
               Couldn&apos;t load model info from the API.
             </p>
           ) : null}
+          <p
+            css={css`
+              margin: ${rhythm(0.85)} 0 0;
+              max-width: 38em;
+              font-family: ${fonts.body};
+              font-size: 0.8rem;
+              line-height: 1.45;
+              color: ${colors.inkSubtle};
+            `}
+          >
+            The mirror runs on tokens; the warranty stays with the mammal on{" "}
+            <a
+              href="https://www.linkedin.com/in/papanomad/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              LinkedIn
+            </a>
+            .
+          </p>
         </header>
         <div
           css={css`
