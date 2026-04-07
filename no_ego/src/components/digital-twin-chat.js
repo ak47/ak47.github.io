@@ -1,5 +1,5 @@
 import * as React from "react"
-import { css } from "@emotion/react"
+import { css, keyframes } from "@emotion/react"
 import { rhythm } from "../utils/typography"
 import { theme } from "../styles/theme"
 import {
@@ -9,6 +9,38 @@ import {
 } from "../utils/digitalTwinApi"
 
 const { colors, fonts, radius } = theme
+
+const dotBounce = keyframes`
+  0%,
+  80%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.28;
+  }
+  40% {
+    transform: translateY(-5px);
+    opacity: 1;
+  }
+`
+
+const mirrorShimmer = keyframes`
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+`
+
+const cursorPulse = keyframes`
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+`
 
 export default function DigitalTwinChat() {
   const apiBase = getApiBase()
@@ -196,44 +228,161 @@ export default function DigitalTwinChat() {
             Say hello to start.
           </p>
         )}
-        {messages.map(m => (
-          <div
-            key={m.id}
-            css={css`
-              align-self: ${m.role === "user" ? "flex-end" : "flex-start"};
-              max-width: 92%;
-              padding: ${rhythm(0.55)} ${rhythm(0.75)};
-              border-radius: ${radius.md};
-              font-family: ${fonts.body};
-              font-size: 0.9rem;
-              line-height: 1.5;
-              white-space: pre-wrap;
-              overflow-wrap: anywhere;
-              word-break: break-word;
-              background: ${m.role === "user"
-                ? colors.accentMuted
-                : colors.canvas};
-              color: ${colors.ink};
-              border: 1px solid
-                ${m.role === "user" ? colors.borderLight : colors.border};
+        {messages.map(m => {
+          const isActiveAssistant =
+            sending &&
+            m.role === "assistant" &&
+            messages.length > 0 &&
+            messages[messages.length - 1]?.id === m.id
+          const showPendingDots = isActiveAssistant && !m.text
+          const showStreamCursor = isActiveAssistant && Boolean(m.text)
 
-              @media (max-width: 640px) {
-                align-self: stretch;
-                max-width: none;
-                width: 100%;
-                box-sizing: border-box;
-                padding: ${rhythm(0.5)} ${rhythm(0.6)};
-                font-size: 0.95rem;
-                border-left-width: 3px;
-                border-left-color: ${m.role === "user"
-                  ? colors.accent
-                  : colors.border};
-              }
-            `}
-          >
-            {m.text || (m.role === "assistant" && sending ? "…" : "")}
-          </div>
-        ))}
+          return (
+            <div
+              key={m.id}
+              css={css`
+                align-self: ${m.role === "user" ? "flex-end" : "flex-start"};
+                max-width: 92%;
+                padding: ${rhythm(0.55)} ${rhythm(0.75)};
+                border-radius: ${radius.md};
+                font-family: ${fonts.body};
+                font-size: 0.9rem;
+                line-height: 1.5;
+                white-space: pre-wrap;
+                overflow-wrap: anywhere;
+                word-break: break-word;
+                background: ${m.role === "user"
+                  ? colors.accentMuted
+                  : showPendingDots
+                    ? `linear-gradient(
+                    105deg,
+                    ${colors.canvas} 0%,
+                    ${colors.accentMuted} 42%,
+                    ${colors.canvas} 84%
+                  )`
+                    : colors.canvas};
+                background-size: ${showPendingDots ? "200% 100%" : "auto"};
+                animation: ${showPendingDots
+                  ? `${mirrorShimmer} 2.8s ease-in-out infinite`
+                  : "none"};
+                color: ${colors.ink};
+                border: 1px solid
+                  ${m.role === "user" ? colors.borderLight : colors.border};
+                min-height: ${showPendingDots ? rhythm(1.75) : "auto"};
+
+                @media (prefers-reduced-motion: reduce) {
+                  animation: none;
+                  background: ${m.role === "user"
+                    ? colors.accentMuted
+                    : colors.canvas};
+                  background-size: auto;
+                }
+
+                @media (max-width: 640px) {
+                  align-self: stretch;
+                  max-width: none;
+                  width: 100%;
+                  box-sizing: border-box;
+                  padding: ${rhythm(0.5)} ${rhythm(0.6)};
+                  font-size: 0.95rem;
+                  border-left-width: 3px;
+                  border-left-color: ${m.role === "user"
+                    ? colors.accent
+                    : colors.border};
+                }
+              `}
+            >
+              {showPendingDots ? (
+                <div
+                  role="status"
+                  aria-live="polite"
+                  aria-atomic="true"
+                  css={css`
+                    position: relative;
+                    display: flex;
+                    flex-direction: column;
+                    gap: ${rhythm(0.5)};
+                  `}
+                >
+                  <span
+                    css={css`
+                      position: absolute;
+                      width: 1px;
+                      height: 1px;
+                      padding: 0;
+                      margin: -1px;
+                      overflow: hidden;
+                      clip: rect(0, 0, 0, 0);
+                      border: 0;
+                    `}
+                  >
+                    Assistant is composing a response.
+                  </span>
+                  <span
+                    css={css`
+                      display: flex;
+                      align-items: center;
+                      gap: 0.35rem;
+                    `}
+                  >
+                    {[0, 1, 2].map(i => (
+                      <span
+                        key={i}
+                        css={css`
+                          display: inline-block;
+                          width: 7px;
+                          height: 7px;
+                          border-radius: 50%;
+                          background: ${colors.accent};
+                          animation: ${dotBounce} 1.05s ease-in-out infinite;
+                          animation-delay: ${i * 0.14}s;
+
+                          @media (prefers-reduced-motion: reduce) {
+                            animation: none;
+                            opacity: ${0.45 + i * 0.15};
+                          }
+                        `}
+                      />
+                    ))}
+                  </span>
+                  <span
+                    css={css`
+                      font-size: 0.82rem;
+                      color: ${colors.inkMuted};
+                      font-style: italic;
+                      letter-spacing: 0.02em;
+                    `}
+                  >
+                    The mirror confers…
+                  </span>
+                </div>
+              ) : (
+                <>
+                  {m.text}
+                  {showStreamCursor ? (
+                    <span
+                      aria-hidden
+                      css={css`
+                        display: inline-block;
+                        margin-left: 1px;
+                        width: 0.12em;
+                        height: 1em;
+                        vertical-align: text-bottom;
+                        background: ${colors.accent};
+                        animation: ${cursorPulse} 0.85s ease-in-out infinite;
+
+                        @media (prefers-reduced-motion: reduce) {
+                          animation: none;
+                          opacity: 0.85;
+                        }
+                      `}
+                    />
+                  ) : null}
+                </>
+              )}
+            </div>
+          )
+        })}
         <div ref={bottomRef} />
       </div>
 
