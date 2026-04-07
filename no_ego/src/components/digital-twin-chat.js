@@ -18,7 +18,7 @@ const dotBounce = keyframes`
     opacity: 0.28;
   }
   40% {
-    transform: translateY(-5px);
+    transform: translateY(-3px);
     opacity: 1;
   }
 `
@@ -243,14 +243,27 @@ export default function DigitalTwinChat() {
               css={css`
                 align-self: ${m.role === "user" ? "flex-end" : "flex-start"};
                 max-width: 92%;
-                padding: ${rhythm(0.55)} ${rhythm(0.75)};
+                padding: ${showPendingDots
+                  ? `${rhythm(1)} ${rhythm(1.1)}`
+                  : `${rhythm(0.55)} ${rhythm(0.75)}`};
                 border-radius: ${radius.md};
                 font-family: ${fonts.body};
                 font-size: 0.9rem;
                 line-height: 1.5;
-                white-space: pre-wrap;
+                white-space: ${showPendingDots ? "normal" : "pre-wrap"};
                 overflow-wrap: anywhere;
                 word-break: break-word;
+                box-sizing: border-box;
+                ${showPendingDots
+                  ? `
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  justify-content: center;
+                  min-height: ${rhythm(4.25)};
+                  overflow: visible;
+                `
+                  : ""}
                 background: ${m.role === "user"
                   ? colors.accentMuted
                   : showPendingDots
@@ -268,7 +281,6 @@ export default function DigitalTwinChat() {
                 color: ${colors.ink};
                 border: 1px solid
                   ${m.role === "user" ? colors.borderLight : colors.border};
-                min-height: ${showPendingDots ? rhythm(1.75) : "auto"};
 
                 @media (prefers-reduced-motion: reduce) {
                   animation: none;
@@ -283,7 +295,9 @@ export default function DigitalTwinChat() {
                   max-width: none;
                   width: 100%;
                   box-sizing: border-box;
-                  padding: ${rhythm(0.5)} ${rhythm(0.6)};
+                  padding: ${showPendingDots
+                    ? `${rhythm(0.95)} ${rhythm(0.85)}`
+                    : `${rhythm(0.5)} ${rhythm(0.6)}`};
                   font-size: 0.95rem;
                   border-left-width: 3px;
                   border-left-color: ${m.role === "user"
@@ -301,7 +315,11 @@ export default function DigitalTwinChat() {
                     position: relative;
                     display: flex;
                     flex-direction: column;
-                    gap: ${rhythm(0.5)};
+                    align-items: center;
+                    justify-content: center;
+                    gap: ${rhythm(0.65)};
+                    width: 100%;
+                    text-align: center;
                   `}
                 >
                   <span
@@ -322,7 +340,9 @@ export default function DigitalTwinChat() {
                     css={css`
                       display: flex;
                       align-items: center;
+                      justify-content: center;
                       gap: 0.35rem;
+                      flex-shrink: 0;
                     `}
                   >
                     {[0, 1, 2].map(i => (
@@ -347,10 +367,13 @@ export default function DigitalTwinChat() {
                   </span>
                   <span
                     css={css`
+                      display: block;
                       font-size: 0.82rem;
+                      line-height: 1.45;
                       color: ${colors.inkMuted};
                       font-style: italic;
                       letter-spacing: 0.02em;
+                      max-width: 18em;
                     `}
                   >
                     The mirror confers…
