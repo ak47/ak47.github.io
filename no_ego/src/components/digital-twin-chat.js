@@ -4,11 +4,49 @@ import { rhythm } from "../utils/typography"
 import { theme } from "../styles/theme"
 import {
   getApiBase,
+  getConversationId,
   loadChatHistory,
+  pollMessages,
   sendChatPrompt,
 } from "../utils/digitalTwinApi"
 
 const { colors, fonts, radius } = theme
+
+const OWNER_DISPLAY_NAME = "Andy"
+
+const POLL_TIERS_MS = [
+  { idleMs: 60 * 60 * 1000, intervalMs: 5 * 60 * 1000 },
+  { idleMs: 10 * 60 * 1000, intervalMs: 2 * 60 * 1000 },
+  { idleMs: 2 * 60 * 1000, intervalMs: 30 * 1000 },
+  { idleMs: 0, intervalMs: 10 * 1000 },
+]
+
+function pollIntervalForIdle(idleMs) {
+  for (const tier of POLL_TIERS_MS) {
+    if (idleMs >= tier.idleMs) return tier.intervalMs
+  }
+  return 10 * 1000
+}
+
+function maxServerId(messages) {
+  let max = null
+  for (const m of messages) {
+    if (m.serverId != null && (max == null || m.serverId > max)) {
+      max = m.serverId
+    }
+  }
+  return max
+}
+
+function mergePolledMessages(prev, incoming) {
+  if (!incoming.length) return prev
+  const seen = new Set(
+    prev.filter(m => m.serverId != null).map(m => m.serverId)
+  )
+  const toAdd = incoming.filter(m => m.serverId != null && !seen.has(m.serverId))
+  if (!toAdd.length) return prev
+  return [...prev, ...toAdd]
+}
 
 const dotBounce = keyframes`
   0%,
@@ -50,6 +88,14 @@ export default function DigitalTwinChat() {
   const [sending, setSending] = React.useState(false)
   const [error, setError] = React.useState(null)
   const bottomRef = React.useRef(null)
+  const lastActivityRef = React.useRef(Date.now())
+  const pollTimerRef = React.useRef(null)
+  const messagesRef = React.useRef(messages)
+  messagesRef.current = messages
+
+  const bumpActivity = React.useCallback(() => {
+    lastActivityRef.current = Date.now()
+  }, [])
 
   React.useEffect(() => {
     if (!apiBase || typeof window === "undefined") return undefined
@@ -59,13 +105,8 @@ export default function DigitalTwinChat() {
     loadChatHistory(apiBase)
       .then(rows => {
         if (!cancelled) {
-          setMessages(
-            rows.map((m, i) => ({
-              id: `h-${i}`,
-              role: m.role === "assistant" ? "assistant" : "user",
-              text: String(m.text || ""),
-            }))
-          )
+          setMessages(rows)
+          if (rows.length) bumpActivity()
         }
       })
       .catch(e => {
@@ -77,7 +118,50 @@ export default function DigitalTwinChat() {
     return () => {
       cancelled = true
     }
-  }, [apiBase])
+  }, [apiBase, bumpActivity])
+
+  React.useEffect(() => {
+    if (!apiBase || typeof window === "undefined") return undefined
+
+    const conversationId = getConversationId()
+    if (!conversationId) return undefined
+
+    let cancelled = false
+
+    function schedulePoll() {
+      if (cancelled) return
+      const idleMs = Date.now() - lastActivityRef.current
+      const delay = pollIntervalForIdle(idleMs)
+      pollTimerRef.current = window.setTimeout(runPoll, delay)
+    }
+
+    async function runPoll() {
+      if (cancelled || sending) {
+        schedulePoll()
+        return
+      }
+      const afterId = maxServerId(messagesRef.current)
+      try {
+        const incoming = await pollMessages(apiBase, conversationId, afterId)
+        if (cancelled) return
+        if (incoming.length) {
+          bumpActivity()
+          setMessages(prev => mergePolledMessages(prev, incoming))
+        }
+      } catch {
+        // Poll failures are non-fatal; retry on next tier.
+      }
+      schedulePoll()
+    }
+
+    schedulePoll()
+    return () => {
+      cancelled = true
+      if (pollTimerRef.current != null) {
+        window.clearTimeout(pollTimerRef.current)
+      }
+    }
+  }, [apiBase, sending, bumpActivity])
 
   React.useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -88,13 +172,17 @@ export default function DigitalTwinChat() {
     const text = input.trim()
     if (!text || !apiBase || sending) return
 
+    bumpActivity()
     setInput("")
     setError(null)
     const userId = `u-${Date.now()}`
-    setMessages(prev => [...prev, { id: userId, role: "user", text }])
+    setMessages(prev => [...prev, { id: userId, role: "user", text, serverId: null }])
 
     const asstId = `a-${Date.now()}`
-    setMessages(prev => [...prev, { id: asstId, role: "assistant", text: "" }])
+    setMessages(prev => [
+      ...prev,
+      { id: asstId, role: "assistant", text: "", serverId: null },
+    ])
     setSending(true)
 
     let acc = ""
@@ -105,6 +193,13 @@ export default function DigitalTwinChat() {
           prev.map(m => (m.id === asstId ? { ...m, text: acc } : m))
         )
       })
+      bumpActivity()
+      try {
+        const rows = await loadChatHistory(apiBase)
+        setMessages(rows)
+      } catch {
+        // Keep streamed UI if history refresh fails.
+      }
     } catch (err) {
       setError(err.message || "Request failed.")
       setMessages(prev => prev.filter(m => m.id !== asstId))
@@ -229,6 +324,8 @@ export default function DigitalTwinChat() {
           </p>
         )}
         {messages.map(m => {
+          const isOwner = m.role === "owner"
+          const isUser = m.role === "user"
           const isActiveAssistant =
             sending &&
             m.role === "assistant" &&
@@ -241,7 +338,7 @@ export default function DigitalTwinChat() {
             <div
               key={m.id}
               css={css`
-                align-self: ${m.role === "user" ? "flex-end" : "flex-start"};
+                align-self: ${isUser ? "flex-end" : "flex-start"};
                 max-width: 92%;
                 padding: ${showPendingDots
                   ? `${rhythm(1)} ${rhythm(1.1)}`
@@ -264,29 +361,37 @@ export default function DigitalTwinChat() {
                   overflow: visible;
                 `
                   : ""}
-                background: ${m.role === "user"
+                background: ${isUser
                   ? colors.accentMuted
-                  : showPendingDots
-                    ? `linear-gradient(
+                  : isOwner
+                    ? colors.canvasDeep
+                    : showPendingDots
+                      ? `linear-gradient(
                     105deg,
                     ${colors.canvas} 0%,
                     ${colors.accentMuted} 42%,
                     ${colors.canvas} 84%
                   )`
-                    : colors.canvas};
+                      : colors.canvas};
                 background-size: ${showPendingDots ? "200% 100%" : "auto"};
                 animation: ${showPendingDots
                   ? `${mirrorShimmer} 2.8s ease-in-out infinite`
                   : "none"};
                 color: ${colors.ink};
                 border: 1px solid
-                  ${m.role === "user" ? colors.borderLight : colors.border};
+                  ${isOwner
+                    ? colors.warn
+                    : isUser
+                      ? colors.borderLight
+                      : colors.border};
 
                 @media (prefers-reduced-motion: reduce) {
                   animation: none;
-                  background: ${m.role === "user"
+                  background: ${isUser
                     ? colors.accentMuted
-                    : colors.canvas};
+                    : isOwner
+                      ? colors.canvasDeep
+                      : colors.canvas};
                   background-size: auto;
                 }
 
@@ -300,12 +405,30 @@ export default function DigitalTwinChat() {
                     : `${rhythm(0.5)} ${rhythm(0.6)}`};
                   font-size: 0.95rem;
                   border-left-width: 3px;
-                  border-left-color: ${m.role === "user"
-                    ? colors.accent
-                    : colors.border};
+                  border-left-color: ${isOwner
+                    ? colors.warn
+                    : isUser
+                      ? colors.accent
+                      : colors.border};
                 }
               `}
             >
+              {isOwner ? (
+                <span
+                  css={css`
+                    display: block;
+                    font-family: ${fonts.heading};
+                    font-size: 0.72rem;
+                    font-weight: 600;
+                    letter-spacing: 0.08em;
+                    text-transform: uppercase;
+                    color: ${colors.warn};
+                    margin-bottom: ${rhythm(0.25)};
+                  `}
+                >
+                  {OWNER_DISPLAY_NAME}
+                </span>
+              ) : null}
               {showPendingDots ? (
                 <div
                   role="status"
