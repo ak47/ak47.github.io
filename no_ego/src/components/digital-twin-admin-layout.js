@@ -79,7 +79,8 @@ export default function DigitalTwinAdminLayout({ activeTab, title, children }) {
         if (!result.ok) setAuthError(result.detail)
       })
       .catch(() => {
-        if (!cancelled) setSignInReady(false)
+        // Probe inconclusive — keep sign-in enabled; navigation surfaces real errors.
+        if (!cancelled) setSignInReady(true)
       })
     return () => {
       cancelled = true
