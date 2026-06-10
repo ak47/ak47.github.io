@@ -1,5 +1,6 @@
 /**
- * Digital twin Cloud Run API — GET/POST /api/chat, X-Session-Id, SSE on POST.
+ * Digital twin Cloud Run API — public chat + admin (feature 001).
+ * Contract: digital_twin/specs/001-conversation-persistence-admin/contracts/openapi.yaml
  * Build with GATSBY_DIGITAL_TWIN_API_BASE=https://digital-twin.no-ego.net (no trailing slash).
  */
 
@@ -16,9 +17,14 @@ export function getApiBase() {
   return ""
 }
 
+export function getConversationId() {
+  if (typeof window === "undefined") return ""
+  return window.localStorage.getItem(SESSION_STORAGE_KEY) || ""
+}
+
 function sessionHeaders() {
   if (typeof window === "undefined") return {}
-  const sid = window.localStorage.getItem(SESSION_STORAGE_KEY) || ""
+  const sid = getConversationId()
   if (!sid) return {}
   return { "X-Session-Id": sid }
 }
@@ -29,7 +35,43 @@ export function rememberSessionFromResponse(res) {
   if (sid) window.localStorage.setItem(SESSION_STORAGE_KEY, sid)
 }
 
+/**
+ * Map API message to UI shape. Supports legacy user/assistant/text and 001 visitor/twin/owner/content.
+ * @returns {{ id: number|string|null, role: 'user'|'assistant'|'owner', text: string, createdAt: string|null }}
+ */
+export function normalizeApiMessage(raw) {
+  const apiRole = String(raw?.role || "").toLowerCase()
+  let role = "assistant"
+  if (apiRole === "visitor" || apiRole === "user") role = "user"
+  else if (apiRole === "owner" || apiRole === "human") role = "owner"
+  else if (apiRole === "twin" || apiRole === "assistant") role = "assistant"
+
+  const text = String(raw?.content ?? raw?.text ?? "")
+  const id = raw?.id != null ? raw.id : null
+  const createdAt = raw?.created_at || null
+  return { id, role, text, createdAt }
+}
+
+function clientIdForMessage(m, index) {
+  if (m.id != null) return `m-${m.id}`
+  return `h-${index}`
+}
+
 export async function loadChatHistory(apiBase) {
+  const conversationId = getConversationId()
+  if (conversationId) {
+    try {
+      const thread = await fetchConversationThread(apiBase, conversationId)
+      return thread.messages.map((m, i) => ({
+        ...normalizeApiMessage(m),
+        id: clientIdForMessage(m, i),
+        serverId: m.id != null ? m.id : null,
+      }))
+    } catch {
+      // Fall through to legacy GET /api/chat
+    }
+  }
+
   const res = await fetch(`${apiBase}/api/chat`, {
     headers: { ...sessionHeaders() },
   })
@@ -38,14 +80,41 @@ export async function loadChatHistory(apiBase) {
     throw new Error(`GET /api/chat failed (${res.status})`)
   }
   const data = await res.json()
-  return Array.isArray(data.messages) ? data.messages : []
+  const rows = Array.isArray(data.messages) ? data.messages : []
+  return rows.map((m, i) => ({
+    ...normalizeApiMessage(m),
+    id: clientIdForMessage(m, i),
+    serverId: m.id != null ? m.id : null,
+  }))
+}
+
+async function fetchConversationThread(apiBase, conversationId, afterId) {
+  const qs = afterId != null ? `?after=${encodeURIComponent(afterId)}` : ""
+  const res = await fetch(
+    `${apiBase}/api/conversations/${encodeURIComponent(conversationId)}${qs}`
+  )
+  if (!res.ok) {
+    throw new Error(`GET /api/conversations/${conversationId} failed (${res.status})`)
+  }
+  return res.json()
 }
 
 /**
+ * Incremental poll for owner/twin messages after last server message id.
  * @param {string} apiBase
- * @param {string} prompt
- * @param {(chunk: string) => void} onTextChunk
+ * @param {string} conversationId
+ * @param {number|null} afterId
  */
+export async function pollMessages(apiBase, conversationId, afterId) {
+  const thread = await fetchConversationThread(apiBase, conversationId, afterId)
+  const rows = Array.isArray(thread.messages) ? thread.messages : []
+  return rows.map((m, i) => ({
+    ...normalizeApiMessage(m),
+    id: clientIdForMessage(m, i),
+    serverId: m.id != null ? m.id : null,
+  }))
+}
+
 /**
  * @param {string} apiBase
  * @returns {Promise<{ modelId: string, provider: string }>}
@@ -99,4 +168,90 @@ export async function sendChatPrompt(apiBase, prompt, onTextChunk) {
       }
     }
   }
+}
+
+// --- Admin API (credentials: include) — openapi.yaml /admin/*
+
+async function adminFetch(apiBase, path, options = {}) {
+  const headers = { ...(options.headers || {}) }
+  if (options.body != null && !headers["Content-Type"]) {
+    headers["Content-Type"] = "application/json"
+  }
+  const res = await fetch(`${apiBase}${path}`, {
+    ...options,
+    credentials: "include",
+    headers,
+  })
+  return res
+}
+
+async function adminJson(apiBase, path, options = {}) {
+  const res = await adminFetch(apiBase, path, options)
+  if (!res.ok) {
+    let detail = `Request failed (${res.status})`
+    try {
+      const err = await res.json()
+      if (err?.detail) detail = String(err.detail)
+    } catch {
+      // ignore
+    }
+    const error = new Error(detail)
+    error.status = res.status
+    throw error
+  }
+  if (res.status === 204) return null
+  const text = await res.text()
+  if (!text) return null
+  return JSON.parse(text)
+}
+
+/** Redirect browser to Google OAuth (backend handles allowlist). */
+export function adminGoogleSignIn(apiBase) {
+  if (typeof window === "undefined") return
+  window.location.href = `${apiBase}/admin/auth/google`
+}
+
+export async function adminLogout(apiBase) {
+  return adminJson(apiBase, "/admin/logout", { method: "POST" })
+}
+
+/** @returns {Promise<{ authenticated: boolean, email?: string }|null>} */
+export async function adminMe(apiBase) {
+  const res = await adminFetch(apiBase, "/admin/me")
+  if (res.status === 401) return null
+  if (!res.ok) {
+    throw new Error(`GET /admin/me failed (${res.status})`)
+  }
+  return res.json()
+}
+
+export async function adminListConversations(apiBase) {
+  const rows = await adminJson(apiBase, "/admin/conversations")
+  return Array.isArray(rows) ? rows : []
+}
+
+export async function adminGetConversation(apiBase, conversationId) {
+  return adminJson(
+    apiBase,
+    `/admin/conversations/${encodeURIComponent(conversationId)}`
+  )
+}
+
+export async function adminPostReply(apiBase, conversationId, content) {
+  return adminJson(
+    apiBase,
+    `/admin/conversations/${encodeURIComponent(conversationId)}/messages`,
+    {
+      method: "POST",
+      body: JSON.stringify({ content }),
+    }
+  )
+}
+
+export async function adminResolve(apiBase, conversationId) {
+  return adminJson(
+    apiBase,
+    `/admin/conversations/${encodeURIComponent(conversationId)}/resolve`,
+    { method: "POST" }
+  )
 }
