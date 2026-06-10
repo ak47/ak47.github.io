@@ -205,6 +205,32 @@ async function adminJson(apiBase, path, options = {}) {
   return JSON.parse(text)
 }
 
+/**
+ * Whether the API has Google OAuth wired for admin sign-in.
+ * @returns {Promise<{ ok: true }|{ ok: false, detail: string }>}
+ */
+export async function checkAdminSignInAvailable(apiBase) {
+  const res = await fetch(`${apiBase}/admin/auth/google`, {
+    redirect: "manual",
+    credentials: "include",
+  })
+  if (res.status === 302 || res.status === 301) return { ok: true }
+  if (res.status === 503) {
+    let detail = "Admin sign-in is not configured on the API."
+    try {
+      const body = await res.json()
+      if (body?.detail) detail = String(body.detail)
+    } catch {
+      // ignore
+    }
+    return { ok: false, detail }
+  }
+  if (!res.ok) {
+    return { ok: false, detail: `Sign-in unavailable (${res.status}).` }
+  }
+  return { ok: true }
+}
+
 /** Redirect browser to Google OAuth (backend handles allowlist). */
 export function adminGoogleSignIn(apiBase) {
   if (typeof window === "undefined") return

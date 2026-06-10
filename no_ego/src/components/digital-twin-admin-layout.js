@@ -8,6 +8,7 @@ import {
   adminGoogleSignIn,
   adminLogout,
   adminMe,
+  checkAdminSignInAvailable,
   getApiBase,
 } from "../utils/digitalTwinApi"
 
@@ -43,11 +44,13 @@ export default function DigitalTwinAdminLayout({ activeTab, title, children }) {
   const apiBase = getApiBase()
   const [session, setSession] = React.useState(undefined)
   const [authError, setAuthError] = React.useState(() => parseAuthError())
+  const [signInReady, setSignInReady] = React.useState(undefined)
   const [busy, setBusy] = React.useState(false)
 
   React.useEffect(() => {
     if (!apiBase) {
       setSession(null)
+      setSignInReady(false)
       return undefined
     }
     let cancelled = false
@@ -65,6 +68,23 @@ export default function DigitalTwinAdminLayout({ activeTab, title, children }) {
       cancelled = true
     }
   }, [apiBase])
+
+  React.useEffect(() => {
+    if (!apiBase || session) return undefined
+    let cancelled = false
+    checkAdminSignInAvailable(apiBase)
+      .then(result => {
+        if (cancelled) return
+        setSignInReady(result.ok)
+        if (!result.ok) setAuthError(result.detail)
+      })
+      .catch(() => {
+        if (!cancelled) setSignInReady(false)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [apiBase, session])
 
   async function onLogout() {
     if (!apiBase || busy) return
@@ -170,6 +190,7 @@ export default function DigitalTwinAdminLayout({ activeTab, title, children }) {
             </p>
             <button
               type="button"
+              disabled={signInReady === false}
               onClick={() => adminGoogleSignIn(apiBase)}
               css={buttonCss(true)}
             >
