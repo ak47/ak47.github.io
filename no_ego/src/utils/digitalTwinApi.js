@@ -214,7 +214,11 @@ export async function checkAdminSignInAvailable(apiBase) {
     redirect: "manual",
     credentials: "include",
   })
-  if (res.status === 302 || res.status === 301) return { ok: true }
+  // Cross-origin OAuth start returns 307 to Google; fetch exposes that as an
+  // opaque redirect (status 0), not the real 3xx code.
+  if (res.type === "opaqueredirect" || (res.status >= 300 && res.status < 400)) {
+    return { ok: true }
+  }
   if (res.status === 503) {
     let detail = "Admin sign-in is not configured on the API."
     try {
