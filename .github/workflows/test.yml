@@ -1,0 +1,37 @@
+name: Tests
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: no_ego
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Yarn classic (matches yarn.lock v1)
+        run: npm install -g yarn@1.22.22
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: no_ego/node_modules
+          key: ${{ runner.os }}-no_ego-${{ hashFiles('no_ego/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-no_ego-
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Run tests
+        run: yarn test
