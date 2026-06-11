@@ -111,7 +111,8 @@ verify it fails; confirm an access-log entry exists for an allowlisted view.
    family and admin sessions are non-interchangeable.
 5. **Given** an allowlisted family member viewing a gallery, **When** the
    listing is served, **Then** an audit record is written containing the
-   viewer's email, the gallery name, and a timestamp.
+   viewer's email, the gallery name, a timestamp, and connection details
+   (IP address and browser user agent when available).
 
 ---
 
@@ -252,8 +253,11 @@ answered by the pre-existing corpus and verify it still answers correctly.
   non-interchangeable: a family session never grants admin access and vice
   versa.
 - **FR-015**: Every gallery or photo listing access MUST produce an audit
-  record containing the authenticated email, the gallery name, and a
-  timestamp, retrievable by the site owner.
+  record containing the authenticated email, the gallery name, a timestamp,
+  and available connection details (client IP address, browser user agent,
+  referer when present, with geolocation derivable from the IP), retrievable
+  by the site owner. Missing connection details MUST NOT block access or
+  logging.
 
 **Archive migration**
 
@@ -292,7 +296,8 @@ answered by the pre-existing corpus and verify it still answers correctly.
   archive; maintained outside the repository, separate from the admin
   allowlist.
 - **Access Log Entry**: An audit record of an archive view — viewer email,
-  gallery name, timestamp.
+  gallery name, timestamp, plus connection details when available (client IP
+  address, browser user agent, referer; geolocation derivable from the IP).
 
 ## Success Criteria *(mandatory)*
 
@@ -310,7 +315,8 @@ answered by the pre-existing corpus and verify it still answers correctly.
   direct media retrieval without a valid link fails 100% of the time; issued
   media links stop working within 15 minutes.
 - **SC-005**: 100% of gallery accesses produce an audit record with the
-  viewer's email, gallery name, and timestamp.
+  viewer's email, gallery name, timestamp, and available connection details
+  (IP address, browser user agent).
 - **SC-006**: The twin correctly answers questions about UCCS coursework and
   the 2005 site after ingest, and answers to pre-existing corpus questions are
   unchanged.
