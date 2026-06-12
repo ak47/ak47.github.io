@@ -78,8 +78,8 @@
 - [X] T014 [US2] Implement `family_routes.py` per `contracts/family-api.md` (login, oauth/callback, me, galleries, galleries/{name}, videos, logout) with V4 signed URLs via IAM signBlob impersonated signing (research.md R1); mount router in `src/digital_twin/main.py` — in digital_twin: `src/digital_twin/family_routes.py` (makes T010 pass)
 - [X] T015 [US2] Implement one-shot migration script in digital_twin: `scripts/migrate_family_media.py` — parse dump (CLI `--dump` path, never committed), reconcile filesystem per research.md R7, transcode 28 MPGs with ffmpeg per research.md R4 (+ poster at ~1 s), idempotent upload to `galleries/`+`videos/`, write `manifest.json` per `contracts/media-manifest.md`, print reconciliation report (makes T011 pass)
 - [X] T016 [US2] Terraform in digital_twin: `terraform/` — private bucket (uniform bucket-level access, no public IAM), Cloud Run SA `roles/storage.objectViewer` + `iam.serviceAccountTokenCreator` on itself, `family_allowed_emails` variable wired to Cloud Run env, `TF_FAMILY_ALLOWED_EMAILS` in `.github/workflows/terraform.yml`
-- [ ] T017 [US2] **GATE (Andy)**: review `terraform plan` output, apply, add `/family/oauth/callback` redirect URI to the Google OAuth client in GCP console, set `TF_FAMILY_ALLOWED_EMAILS` values
-- [ ] T018 [US2] Run migration against the new bucket; verify checkpoint V3: report counts match T004 inventory (21 active galleries, 418 photos reconciled, 28 videos + 28 posters), sample transcodes play in Chrome + Safari, rerun is a no-op (idempotent)
+- [X] T017 [US2] **GATE (Andy)**: review `terraform plan` output, apply, add `/family/oauth/callback` redirect URI to the Google OAuth client in GCP console, set `TF_FAMILY_ALLOWED_EMAILS` values
+- [X] T018 [US2] Run migration against the new bucket; verify checkpoint V3: report counts match T004 inventory (21 active galleries, 418 photos reconciled, 28 videos + 28 posters), sample transcodes play in Chrome + Safari, rerun is a no-op (idempotent)
 
 ### Implementation for User Story 2 — frontend (Stream B, may start once T014's contract is merged, against a local backend)
 
@@ -87,7 +87,7 @@
 - [X] T020 [US2] Implement `no_ego/src/utils/familyApi.js` mirroring `digitalTwinApi.js` (makes T019 pass)
 - [X] T021 [US2] Implement `no_ego/src/pages/family.js`: state machine signed-out (Google button → `/family/login`) → index (21 galleries, titles/descriptions) → gallery grid (thumbs) → full-image view (caption) → videos section (poster grid, `<video controls>`, signed URL fetched at open); service-unavailable fallback per Principle V; Emotion `css` + theme tokens
 - [X] T022 [US2] Add small family footer link in `no_ego/src/components/layout.js` (FR-012; coordinate with T037 which restructures the same footer)
-- [ ] T023 [US2] Verify US2 happy path end-to-end (quickstart → V4 step 1): allowlisted login → index → photo → video playback; `yarn test && yarn build` green
+- [X] T023 [US2] Verify US2 happy path end-to-end (quickstart → V4 step 1): allowlisted login → index → photo → video playback; `yarn test && yarn build` green
 
 **Checkpoint**: US2 delivers the full family-archive value for allowlisted users
 
@@ -109,7 +109,7 @@
 
 - [X] T027 [US3] Implement structured audit logging in digital_twin: `src/digital_twin/family_routes.py` via existing `structured_logging` module, emitting the data-model.md Access Log Entry fields on `/family/galleries`, `/family/galleries/{name}`, `/family/videos` (makes T026 pass; T024/T025 should already pass from T013/T014 — fix there if not)
 - [X] T028 [US3] Implement signed-in-denied "not on the list" state in `no_ego/src/pages/family.js` (driven by `/family/me` → `allowed: false`), with sign-out affordance; Jest test for the denied state (FR-011)
-- [ ] T029 [US3] Verify quickstart → V4 steps 2–5 against deployed stack: non-allowlisted refusal; `curl` direct bucket object + `manifest.json` → 403; signed URL refused after 15 min; Cloud Logging shows entries with email/resource/timestamp/IP/user-agent and geo resolvable from IP
+- [X] T029 [US3] Verify quickstart → V4 steps 2–5 against deployed stack: non-allowlisted refusal; `curl` direct bucket object + `manifest.json` → 403; signed URL refused after 15 min; Cloud Logging shows entries with email/resource/timestamp/IP/user-agent and geo resolvable from IP
 
 **Checkpoint**: Privacy/audit requirements proven; US2+US3 together complete the family archive
 
@@ -150,9 +150,9 @@
 
 - [X] T039 [P] [US5] Write digital_twin: `rag-sources/personal-history-2005-website.md` (Rails 1.0 story, Koch curve identity, zen moments, no-ego ethos, Colorado Springs era; source: old repo views)
 - [X] T040 [P] [US5] Write digital_twin: `rag-sources/education-uccs-coursework.md` (compilers, algorithm analysis, graphics, numerical computing, OS, automata, databases, architecture; source: old academics page + resume education)
-- [ ] T041 [US5] **GATE (Andy)**: review both files — content feeds the public twin
-- [ ] T042 [US5] Run existing ingest (GitHub Action or `uv run python scripts/ingest_rag_corpus.py …`); no API redeploy
-- [ ] T043 [US5] Verify checkpoint V5: twin answers "what did Andy study?" and "what was this site in 2005?" correctly; a pre-existing-corpus question (e.g. resume content) answers unchanged
+- [X] T041 [US5] **GATE (Andy)**: review both files — content feeds the public twin
+- [X] T042 [US5] Run existing ingest (GitHub Action or `uv run python scripts/ingest_rag_corpus.py …`); no API redeploy
+- [X] T043 [US5] Verify checkpoint V5: twin answers "what did Andy study?" and "what was this site in 2005?" correctly; a pre-existing-corpus question (e.g. resume content) answers unchanged
 
 **Checkpoint**: All five user stories independently functional
 
@@ -163,7 +163,7 @@
 - [X] T044 [P] Document new BE env vars (`FAMILY_ALLOWED_EMAILS`, `FAMILY_MEDIA_BUCKET`) in digital_twin README / `.env.example`; confirm no FE env additions needed (`GATSBY_DIGITAL_TWIN_API_BASE` reused, already documented in `no_ego/README.md`)
 - [X] T045 [P] `yarn format` in `no_ego/` and final FE cleanup (theme tokens everywhere, no stray inline hex)
 - [X] T046 Full suites green: `yarn test && yarn build` in `no_ego/`; `uv run pytest -q` in digital_twin
-- [ ] T047 Ship checkpoint V6: deploy FE via the **Deploy Pages** GitHub Actions workflow; full manual quickstart pass (V1 + V4 + V5) on https://no-ego.net
+- [X] T047 Ship checkpoint V6: deploy FE via the **Deploy Pages** GitHub Actions workflow; full manual quickstart pass (V1 + V4 + V5) on https://no-ego.net
 
 ---
 
