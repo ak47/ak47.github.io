@@ -104,12 +104,70 @@ function Unavailable() {
   )
 }
 
-function PhotoView({ photo, onClose }) {
+const navButton = css`
+  ${subtleButton};
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+`
+
+function PhotoView({ photo, index, total, onPrev, onNext, onClose }) {
+  const hasPrev = index > 0
+  const hasNext = index < total - 1
+
+  React.useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "ArrowLeft" && hasPrev) onPrev()
+      if (e.key === "ArrowRight" && hasNext) onNext()
+    }
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [hasPrev, hasNext, onPrev, onNext])
+
   return (
     <div>
       <button type="button" css={subtleButton} onClick={onClose}>
         ← Back to gallery
       </button>
+      <div
+        css={css`
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: ${rhythm(0.5)};
+          flex-wrap: wrap;
+          margin-top: ${rhythm(0.75)};
+        `}
+      >
+        <button
+          type="button"
+          css={navButton}
+          onClick={onPrev}
+          disabled={!hasPrev}
+          aria-label="Previous photo"
+        >
+          ← Previous
+        </button>
+        <span
+          css={css`
+            font-family: ${fonts.mono};
+            font-size: 0.8rem;
+            color: ${colors.inkSubtle};
+          `}
+        >
+          {index + 1} of {total}
+        </span>
+        <button
+          type="button"
+          css={navButton}
+          onClick={onNext}
+          disabled={!hasNext}
+          aria-label="Next photo"
+        >
+          Next →
+        </button>
+      </div>
       <figure
         css={css`
           margin: ${rhythm(1)} 0 0;
@@ -141,7 +199,7 @@ function PhotoView({ photo, onClose }) {
 
 function GalleryView({ apiBase, name, onBack }) {
   const [gallery, setGallery] = React.useState(null)
-  const [photo, setPhoto] = React.useState(null)
+  const [photoIndex, setPhotoIndex] = React.useState(null)
   const [error, setError] = React.useState(false)
 
   React.useEffect(() => {
@@ -160,7 +218,19 @@ function GalleryView({ apiBase, name, onBack }) {
 
   if (error) return <Unavailable />
   if (!gallery) return <p css={muted}>Loading…</p>
-  if (photo) return <PhotoView photo={photo} onClose={() => setPhoto(null)} />
+  if (photoIndex != null) {
+    const photo = gallery.items[photoIndex]
+    return (
+      <PhotoView
+        photo={photo}
+        index={photoIndex}
+        total={gallery.items.length}
+        onPrev={() => setPhotoIndex(photoIndex - 1)}
+        onNext={() => setPhotoIndex(photoIndex + 1)}
+        onClose={() => setPhotoIndex(null)}
+      />
+    )
+  }
 
   return (
     <div>
@@ -189,7 +259,7 @@ function GalleryView({ apiBase, name, onBack }) {
           <li key={`${gallery.name}-${i}`}>
             <button
               type="button"
-              onClick={() => setPhoto(item)}
+              onClick={() => setPhotoIndex(i)}
               css={css`
                 border: 1px solid ${colors.borderLight};
                 border-radius: ${radius.sm};
