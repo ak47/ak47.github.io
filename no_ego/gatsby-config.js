@@ -3,6 +3,8 @@ module.exports = {
     title: `nO EgO`,
     description: `A simple site to explore things without the ego demanding perfection decimate goodness`,
     author: `developer of no-ego.net`,
+    // Build-time stamp for the footer "updated" line (no runtime clock).
+    buildTime: new Date().toISOString(),
   },
   plugins: [
     {

@@ -16,6 +16,7 @@ export const theme = {
     borderLight: "#ebe3da",
     success: "#2d6a4f",
     warn: "#c26a1a",
+    heritage: "#FF8003", // 2005 site orange — small accents only (Koch mark, zen rule)
   },
   fonts: {
     heading: `"Outfit", system-ui, -apple-system, sans-serif`,

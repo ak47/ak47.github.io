@@ -25,39 +25,111 @@ export default function IndexPage({ data }) {
           box-shadow: ${shadow.md};
         `}
       >
-        <p
-          css={css`
-            font-family: ${fonts.heading};
-            font-size: 0.72rem;
-            font-weight: 600;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: ${colors.accent};
-            margin-bottom: ${rhythm(0.5)};
-          `}
-        >
-          Journal &amp; experiments
-        </p>
         <h1
           css={css`
-            margin-bottom: ${rhythm(0.75)};
+            margin-bottom: ${rhythm(0.25)};
             line-height: 1.15;
           `}
         >
-          Cute Xi Pandas Eating bamboo
+          Andrew Koch
         </h1>
         <p
           css={css`
-            margin-bottom: 0;
+            font-family: ${fonts.heading};
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: ${colors.accent};
+            margin-bottom: ${rhythm(0.75)};
+          `}
+        >
+          Staff software engineer
+        </p>
+        <p
+          css={css`
+            margin-bottom: ${rhythm(0.65)};
             color: ${colors.inkMuted};
             max-width: 36em;
           `}
         >
-          We precompute the transitive closure of each opinion so related posts are
-          reachable in O(1) hops across the ideological graph—edges are weighted by
-          emotional bandwidth, not relevance. The list below is still mock content, but
-          the closure is already materialized in staging.
+          I&apos;ve been building production software since 1999 — data
+          platforms moving 100M+ records a week, payment-critical integrations,
+          and the on-call, observability, and incident practices that keep them
+          honest. These days my focus is AI-fluent engineering: using the new
+          tools well, with the judgment of someone who has carried a pager.
         </p>
+        <p
+          css={css`
+            margin-bottom: ${rhythm(1)};
+            color: ${colors.inkMuted};
+            max-width: 36em;
+          `}
+        >
+          This site has been my sandbox since 2005, when it ran Rails 1.0. The{" "}
+          <Link to="/about/">About page</Link> can answer questions about me —
+          ask it anything.
+        </p>
+        <div
+          css={css`
+            display: flex;
+            flex-wrap: wrap;
+            gap: ${rhythm(0.5)};
+          `}
+        >
+          <Link
+            to="/about/"
+            css={css`
+              font-family: ${fonts.heading};
+              font-size: 0.85rem;
+              font-weight: 600;
+              text-decoration: none;
+              border-bottom: none;
+              color: ${colors.surface};
+              background: ${colors.accent};
+              padding: 0.45rem 0.9rem;
+              border-radius: ${radius.sm};
+            `}
+          >
+            Ask the twin
+          </Link>
+          <a
+            href="https://www.linkedin.com/in/papanomad/"
+            target="_blank"
+            rel="noopener noreferrer"
+            css={css`
+              font-family: ${fonts.heading};
+              font-size: 0.85rem;
+              font-weight: 600;
+              text-decoration: none;
+              border-bottom: none;
+              color: ${colors.accent};
+              background: ${colors.accentMuted};
+              padding: 0.45rem 0.9rem;
+              border-radius: ${radius.sm};
+            `}
+          >
+            LinkedIn
+          </a>
+          <a
+            href="https://github.com/ak47"
+            target="_blank"
+            rel="noopener noreferrer"
+            css={css`
+              font-family: ${fonts.heading};
+              font-size: 0.85rem;
+              font-weight: 600;
+              text-decoration: none;
+              border-bottom: none;
+              color: ${colors.accent};
+              background: ${colors.accentMuted};
+              padding: 0.45rem 0.9rem;
+              border-radius: ${radius.sm};
+            `}
+          >
+            GitHub
+          </a>
+        </div>
       </section>
 
       <div
@@ -78,7 +150,7 @@ export default function IndexPage({ data }) {
             color: ${colors.ink};
           `}
         >
-          Latest
+          Journal &amp; experiments
         </h4>
         <span
           css={css`
@@ -115,7 +187,9 @@ export default function IndexPage({ data }) {
                 border: 1px solid ${colors.borderLight};
                 border-radius: ${radius.md};
                 box-shadow: ${shadow.sm};
-                transition: transform 0.18s ease, box-shadow 0.18s ease,
+                transition:
+                  transform 0.18s ease,
+                  box-shadow 0.18s ease,
                   border-color 0.18s ease;
 
                 &:hover {
