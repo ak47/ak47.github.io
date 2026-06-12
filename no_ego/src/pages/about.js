@@ -87,8 +87,11 @@ export default function AboutPage({ data }) {
               max-width: 38em;
             `}
           >
-            We&apos;re the only site running on your computer dedicated to showing the
-            best photos and videos of ∫ß eating lots of food.
+            I&apos;m Andy Koch — a staff software engineer shipping production
+            systems since 1999: data platforms, payment-critical integrations,
+            and the operational practices that keep them honest. The chat here
+            is my digital twin, grounded in my resume, project write-ups, and
+            personal history — ask it anything you&apos;d ask me.
           </p>
           <p
             css={css`
@@ -100,8 +103,14 @@ export default function AboutPage({ data }) {
               color: ${colors.inkSubtle};
             `}
           >
-            Powered by the digital-twin API. Your thread is saved per browser via{" "}
-            <code css={css`font-family: ${fonts.mono}; font-size: 0.9em;`}>
+            Powered by the digital-twin API. Your thread is saved per browser
+            via{" "}
+            <code
+              css={css`
+                font-family: ${fonts.mono};
+                font-size: 0.9em;
+              `}
+            >
               X-Session-Id
             </code>
             .
@@ -170,7 +179,10 @@ export default function AboutPage({ data }) {
             flex-direction: column;
 
             @media (min-width: 900px) {
-              min-height: min(calc(100vh - ${space.headerH} - ${rhythm(5)}), 720px);
+              min-height: min(
+                calc(100vh - ${space.headerH} - ${rhythm(5)}),
+                720px
+              );
               border-left: 1px solid ${colors.borderLight};
               padding-left: ${rhythm(2)};
               margin-left: 0;
