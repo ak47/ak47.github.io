@@ -40,7 +40,7 @@
     "@babel/preset-env": "^8.0.2",
     "babel-jest": "^30.0.5",
     "jest": "^30.0.5",
-    "prettier": "^3.9.4"
+    "prettier": "^3.9.6"
   },
   "jest": {
     "testEnvironment": "node",
