@@ -36,8 +36,8 @@
     "typography": "^0.16.19"
   },
   "devDependencies": {
-    "@babel/core": "^8.0.1",
-    "@babel/preset-env": "^8.0.2",
+    "@babel/core": "^7.0.0",
+    "@babel/preset-env": "^7.28.0",
     "babel-jest": "^30.0.5",
     "jest": "^30.0.5",
     "prettier": "^3.9.6"
@@ -57,7 +57,7 @@
     "@parcel/reporter-dev-server": "2.16.4",
     "cookie": "0.7.2",
     "file-type": "21.3.2",
-    "immutable": "3.8.3",
+    "immutable": "4.3.9",
     "lodash": "4.18.1",
     "path-to-regexp": "0.1.13",
     "qs": "6.15.2",
@@ -66,6 +66,8 @@
     "uuid": "11.1.1",
     "webpack": "5.104.1",
     "ws": "8.21.0",
-    "@babel/core": "^8.0.1"
+    "@babel/core": "^7.0.0",
+    "@babel/preset-env": "^7.28.0",
+    "sharp": "0.35.0"
   }
 }
