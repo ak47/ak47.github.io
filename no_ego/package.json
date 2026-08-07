@@ -20,7 +20,6 @@
   "dependencies": {
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
-    "brace-expansion": "^1.1.18",
     "gatsby": "^5.14.1",
     "gatsby-plugin-emotion": "^8.14.0",
     "gatsby-plugin-manifest": "^5.14.0",
@@ -56,6 +55,7 @@
   },
   "resolutions": {
     "@parcel/reporter-dev-server": "2.16.4",
+    "brace-expansion": "^2.1.4",
     "cookie": "0.7.2",
     "file-type": "21.3.2",
     "immutable": "4.3.9",
