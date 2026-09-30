@@ -4104,7 +4104,7 @@ base-x@^3.0.8:
   dependencies:
     safe-buffer "^5.0.1"
 
-base64id@2.0.0, base64id@~2.0.0:
+base64id@~2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/base64id/-/base64id-2.0.0.tgz#2770ac6bc47d312af97a8bf9a634342e0cd25cb6"
   integrity sha512-lGe34o6EHj9y3Kts9R4ZYs/Gr+6N7MCaMlIFA3F1R2O5/m7K06AxfSeO5530PEERE6/WyEg3lsuyw4GHlPZHog==
@@ -5428,15 +5428,14 @@ engine.io-parser@~5.2.1:
   integrity sha512-HqD3yTBfnBxIrbnM1DoD6Pcq8NECnh8d4As1Qgh0z5Gg3jRRIqijury0CL3ghu/edArpUYiYqQiDUQBIs4np3Q==
 
 engine.io@~6.6.0:
-  version "6.6.9"
-  resolved "https://registry.yarnpkg.com/engine.io/-/engine.io-6.6.9.tgz#fd17e9f4e3a256423592574b60ac262e91af4b82"
-  integrity sha512-clKkw4C7nJ22mGgoVcCg6V/W/TxdNyIOTr89k2ONZu81qqkddPFDF0LXcbAwhzPD8DjkiRCjzuiO6Y+fkpD4vg==
+  version "6.6.11"
+  resolved "https://registry.yarnpkg.com/engine.io/-/engine.io-6.6.11.tgz#05203f76be9c63489cdf52aadab4200a201315fd"
+  integrity sha512-z34mGpLoY/82ZbkX1LqGMIaf3wjVMPL6gVC681QDqnmzJ26synI8qAE32P+a7UazmpJZ8UGrFIeAavgRfXzYrg==
   dependencies:
     "@types/cors" "^2.8.12"
     "@types/node" ">=10.0.0"
     "@types/ws" "^8.5.12"
     accepts "~1.3.4"
-    base64id "2.0.0"
     cookie "~0.7.2"
     cors "~2.8.5"
     debug "~4.4.1"
@@ -6131,9 +6130,9 @@ fast-levenshtein@^2.0.6:
   integrity sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==
 
 fast-uri@^3.0.1:
-  version "3.1.7"
-  resolved "https://registry.yarnpkg.com/fast-uri/-/fast-uri-3.1.7.tgz#743157d957f3cbb4c65310e033dc2ad4ad7dc60a"
-  integrity sha512-dOvZVzjdZdz7phd9v6jCbwxrBW3fK6n8Rc0CtdmM4bumzMnxywBYhuph6J819RRw/ku+rLbelwfMunktuzVVHg==
+  version "3.1.8"
+  resolved "https://registry.yarnpkg.com/fast-uri/-/fast-uri-3.1.8.tgz#f7db8d942e20eead3cfe93b0beeb4eb0169e938b"
+  integrity sha512-GZMtZUTNRpOVIECoXwLNZS5xUGE+mVNbTB8h/7Rwh2TFWcBQiPzTgyZi05BF9UMZKkLJv8XBRJTlU7zg8+ZfMg==
 
 fastest-levenshtein@^1.0.16:
   version "1.0.16"
@@ -9324,9 +9323,9 @@ modularscale@^1.0.2:
     lodash.isnumber "^3.0.0"
 
 moment@^2.29.4:
-  version "2.30.1"
-  resolved "https://registry.yarnpkg.com/moment/-/moment-2.30.1.tgz#f8c91c07b7a786e30c59926df530b4eac96974ae"
-  integrity sha512-uEmtNhbDOrWPFS+hdjFCBfy9f2YoyzRpwcl+DqpC6taX21FzsTLQVbMV/W7PzNSX6x/bhC1zA3c2UQ5NzH6how==
+  version "2.31.0"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.31.0.tgz#6e19184e8005a9dfc61c9351263d4d6ea2ace7aa"
+  integrity sha512-0acOTfMiWOheYS4eoWb80yYMb/JLvVv9SHbs2PehaDzfUG0Bw855SKyk0IKTnPGa5+U2bmi3W68l1+sGLX/pvw==
 
 ms@2.0.0:
   version "2.0.0"
